@@ -1,0 +1,87 @@
+<resources>
+    <string name="app_name">New Moukup API</string>
+    <string name="title_activity_maps">Map</string>
+    <!--    Permissions    -->
+    <string name="permission_rationale_location">Access to the location service is required to demonstrate this feature, which shows your current location on the map.</string>
+    <string name="location_permission_denied">This feature requires location permission to enable this feature. Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings &gt; Apps &gt; \'Google Maps API Demos\'.</string>
+    <string name="permission_required_toast">Location permission is required for this feature.</string>
+    <string name="locate_your_store">Locate Your Store</string>
+    <string name="locate_store">Locate Store</string>
+    <string name="confirm_location">Confirm Location</string>
+    <string name="locate_store_msg">We need your exact location for granting the exclusivity. Please visit your store and press the button below to detect the location. This can only be done once, so make sure that you are at your store when you are pressing the button.</string>
+    <string name="location_unavailable">Cannot access location, please install google play services.</string>
+    <string name="branch_head">Branch Head</string>
+    <string name="karyakarta">Captain</string>
+
+
+    <string-array name="tab_A">
+        <item>Item 1A</item>
+        <item>Item 1B</item>
+        <item>Item 1C</item>
+        <item>Item 1D</item>
+        <item>Item 1E</item>
+        <item>Item 1F</item>
+        <item>Item 1G</item>
+        <item>Item 1H</item>
+        <item>Item 1I</item>
+        <item>Item 1J</item>
+        <item>Item 1K</item>
+        <item>Item 1L</item>
+        <item>Item 1M</item>
+        <item>Item 1N</item>
+        <item>Item 1O</item>
+        <item>Item 1P</item>
+        <item>Item 1Q</item>
+        <item>Item 1R</item>
+        <item>Item 1S</item>
+        <item>Item 1T</item>
+    </string-array>
+
+    <string-array name="tab_B">
+        <item>Item 2A</item>
+        <item>Item 2B</item>
+        <item>Item 2C</item>
+        <item>Item 2D</item>
+        <item>Item 2E</item>
+        <item>Item 2F</item>
+        <item>Item 2G</item>
+        <item>Item 2H</item>
+        <item>Item 2I</item>
+        <item>Item 2J</item>
+        <item>Item 2K</item>
+        <item>Item 2L</item>
+        <item>Item 2M</item>
+        <item>Item 2N</item>
+        <item>Item 2O</item>
+        <item>Item 2P</item>
+        <item>Item 2Q</item>
+        <item>Item 2R</item>
+        <item>Item 2S</item>
+        <item>Item 2T</item>
+    </string-array>
+
+    <string-array name="tab_C">
+        <item>Item 3A</item>
+        <item>Item 3B</item>
+        <item>Item 3C</item>
+        <item>Item 3D</item>
+        <item>Item 3E</item>
+        <item>Item 3F</item>
+        <item>Item 3G</item>
+        <item>Item 3H</item>
+        <item>Item 3I</item>
+        <item>Item 3J</item>
+        <item>Item 3K</item>
+        <item>Item 3L</item>
+        <item>Item 3M</item>
+        <item>Item 3N</item>
+        <item>Item 3O</item>
+        <item>Item 3P</item>
+        <item>Item 3Q</item>
+        <item>Item 3R</item>
+        <item>Item 3S</item>
+        <item>Item 3T</item>
+    </string-array>
+
+
+</resources>
