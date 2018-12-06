@@ -53,6 +53,7 @@ class AddNearBy : AppCompatActivity(), OnMapReadyCallback,
         private val LOCATION_PERMISSION_REQUEST_CODE = 13
         private val REQUEST_LOCATION = 663
         private var currentAddress:String=""
+        private var vender_distance:String=""
     }
 
 
@@ -178,6 +179,7 @@ class AddNearBy : AppCompatActivity(), OnMapReadyCallback,
                 i2 = java.lang.Double.valueOf(dtime.format(distance))
             } catch (e: Exception) {
             }
+            vender_distance=""+i2
             this.toast("KM $i2")
             //  val value = parseDouble(DecimalFormat("##.####").format(distance))
             //    toast("KM $value")
@@ -330,6 +332,8 @@ class AddNearBy : AppCompatActivity(), OnMapReadyCallback,
                 apiParams["ownerName"] = owner_name
                 apiParams["latitude"] = mChangeLatLong.latitude.toString()
                 apiParams["longitude"] =  mChangeLatLong.longitude.toString()
+                apiParams["address"] = currentAddress
+                apiParams["vender_distance"] =vender_distance
 
                 apiServices.getRegister(apiParams)
                     .subscribeOn(Schedulers.io())

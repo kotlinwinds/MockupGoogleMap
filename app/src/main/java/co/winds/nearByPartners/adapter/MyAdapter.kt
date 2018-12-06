@@ -36,8 +36,9 @@ class MyAdapter(private val list: List<*>) : RecyclerView.Adapter<MyAdapter.View
         fun bindItem(model: NearbyVendor) {
             itemView.setOnClickListener(this)
             itemView.tv1.text = model.businessName
-            itemView.tv2.text = model.category
-            itemView.tv3.text = ""+model.userId
+            itemView.tv2.text = model.ownerName
+            itemView.tv3.text = ""+model.category
+            itemView.tv4.text =""+model.address
         }
 
         override fun onClick(v: View?) {

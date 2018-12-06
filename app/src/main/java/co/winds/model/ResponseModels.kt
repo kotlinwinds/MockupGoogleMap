@@ -27,7 +27,12 @@ data class NearbyVendor(
     val longitude: Double?,
     @SerializedName("ownerName")
     val ownerName: String?,
+    @SerializedName("address")
+    val address: String,
+    @SerializedName("vender_distance")
+    val vender_distance: String?,
     @SerializedName("userId")
     val userId: Int?,
     var isSelected: Boolean
 )
+

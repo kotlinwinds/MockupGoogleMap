@@ -15,11 +15,6 @@ import kotlinx.android.synthetic.main.row_item.view.*
 
 class MyFilterAdapter(private val context: Context, val list: ArrayList<NearbyVendor>) : RecyclerView.Adapter<MyFilterAdapter.ViewHolder>() {
 
-
-    override fun onBindViewHolder(p0: ViewHolder, p1: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     private val filterList: MutableList<NearbyVendor>?
 
     init {
@@ -33,7 +28,7 @@ class MyFilterAdapter(private val context: Context, val list: ArrayList<NearbyVe
         return ViewHolder(v)
     }
 
-    override  fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
+    override  fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindFun(filterList!![position])
 
         holder.check.setOnCheckedChangeListener(null);
@@ -53,7 +48,7 @@ class MyFilterAdapter(private val context: Context, val list: ArrayList<NearbyVe
         var check: CheckBox = itemView.findViewById<View>(R.id.check) as CheckBox
         val context: Context = itemView.context
         fun bindFun(m: NearbyVendor) {
-            itemView.tv.text = m.ownerName
+            itemView.tv.text = m.category
           //  Picasso.with(context).load(m.avatar).into(itemView.img);
 
 
@@ -68,6 +63,10 @@ class MyFilterAdapter(private val context: Context, val list: ArrayList<NearbyVe
             } else {
                 for (item in list) {
                     if (item.category!!.toLowerCase().contains(text.toLowerCase())) {
+                        if(filterList.isEmpty()){
+                            (context as FilterDialogFragment).noDataShow()
+                        }else (context as FilterDialogFragment).noDataHide()
+
                         filterList.add(item)
                     }
                 }

@@ -66,7 +66,6 @@ class FragmentB : Fragment() {
             .subscribe(
                 { result ->
                     val data = result.data!!.nearbyVendor
-                    Toast.makeText(activity, "${result.message}", Toast.LENGTH_SHORT).show()
                     recy.adapter= MyAdapter(data!! as List<*>)
 
 
