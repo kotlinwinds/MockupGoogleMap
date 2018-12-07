@@ -6,13 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import co.winds.R
-import co.winds.model.NearbyVendor
+import co.winds.model.CategoryModel
 import kotlinx.android.synthetic.main.row_item.view.*
 
 
-class VendorCategoryAdapter(list : ArrayList<NearbyVendor>) : RecyclerView.Adapter<VendorCategoryAdapter.ViewHolder>(){
+class VendorCategoryAdapter(list : ArrayList<CategoryModel>) : RecyclerView.Adapter<VendorCategoryAdapter.ViewHolder>(){
 
-    private var list: ArrayList<NearbyVendor> = ArrayList(list)
+    private var list: ArrayList<CategoryModel> = ArrayList(list)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.row_item, parent, false)
@@ -28,13 +28,13 @@ class VendorCategoryAdapter(list : ArrayList<NearbyVendor>) : RecyclerView.Adapt
     }
 
 
-    fun animateTo(models: List<NearbyVendor>) {
+    fun animateTo(models: List<CategoryModel>) {
         applyAndAnimateRemovals(models)
         applyAndAnimateAdditions(models)
         applyAndAnimateMovedItems(models)
     }
 
-    private fun applyAndAnimateRemovals(newModels: List<NearbyVendor>) {
+    private fun applyAndAnimateRemovals(newModels: List<CategoryModel>) {
         for (i in list.indices.reversed()) {
             val model = list[i]
             if (!newModels.contains(model)) {
@@ -43,7 +43,7 @@ class VendorCategoryAdapter(list : ArrayList<NearbyVendor>) : RecyclerView.Adapt
         }
     }
 
-    private fun applyAndAnimateAdditions(newModels: List<NearbyVendor>) {
+    private fun applyAndAnimateAdditions(newModels: List<CategoryModel>) {
         var i = 0
         val count = newModels.size
         while (i < count) {
@@ -55,7 +55,7 @@ class VendorCategoryAdapter(list : ArrayList<NearbyVendor>) : RecyclerView.Adapt
         }
     }
 
-    private fun applyAndAnimateMovedItems(newModels: List<NearbyVendor>) {
+    private fun applyAndAnimateMovedItems(newModels: List<CategoryModel>) {
         for (toPosition in newModels.indices.reversed()) {
             val model = newModels[toPosition]
             val fromPosition = list.indexOf(model)
@@ -65,13 +65,13 @@ class VendorCategoryAdapter(list : ArrayList<NearbyVendor>) : RecyclerView.Adapt
         }
     }
 
-    fun removeItem(position: Int): NearbyVendor {
+    fun removeItem(position: Int): CategoryModel {
         val model = list.removeAt(position)
         notifyItemRemoved(position)
         return model
     }
 
-    fun addItem(position: Int, model: NearbyVendor) {
+    fun addItem(position: Int, model: CategoryModel) {
         list.add(position, model)
         notifyItemInserted(position)
     }
@@ -85,7 +85,7 @@ class VendorCategoryAdapter(list : ArrayList<NearbyVendor>) : RecyclerView.Adapt
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         @SuppressLint("SetTextI18n")
-        fun bindItems(model: NearbyVendor,li:ArrayList<NearbyVendor>){
+        fun bindItems(model: CategoryModel,li:ArrayList<CategoryModel>){
 
             itemView.check.setOnCheckedChangeListener(null)
             itemView.check.isChecked =model.isSelected
@@ -93,7 +93,7 @@ class VendorCategoryAdapter(list : ArrayList<NearbyVendor>) : RecyclerView.Adapt
                 li[adapterPosition].isSelected = isChecked
             }
 
-            itemView.tv.text=model.category
+            itemView.tv.text=model.name
 
         }
 

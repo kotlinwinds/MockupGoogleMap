@@ -4,6 +4,8 @@ package co.winds.nearByPartners
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Activity.RESULT_CANCELED
+import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
@@ -17,16 +19,13 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SearchView
 import android.util.Log
 import android.view.*
 import android.widget.Toast
 import co.winds.R
 import co.winds.common.PermissionUtils
 import co.winds.model.NearbyVendor
-import co.winds.nearByPartners.adapter.FilterDialogFragment
-import co.winds.nearByPartners.adapter.MyFilterAdapter
+import co.winds.nearByPartners.adapter.FilterActivityDialog
 import co.winds.restservices.ApiUtils
 import co.winds.utils.getAddress
 import co.winds.utils.toast
@@ -40,20 +39,22 @@ import com.google.android.gms.maps.model.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class FragmentA : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
+class FragmentA : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback,IFilterDataCallback{
 
-   private lateinit var mContext:Context
+
+    private  var mContext:Context?=null
    private lateinit var mActivity:AppCompatActivity
-   private val fm by lazy { mActivity.supportFragmentManager}
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mContext=(activity!! as AppCompatActivity)
         mActivity=(activity!! as AppCompatActivity)
+        mContext=(activity!! as AppCompatActivity)
         setHasOptionsMenu(true)
     }
 
+    override fun isFilter(filterData: String) {
+        mContext!!.toast(filterData)
+    }
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -78,12 +79,13 @@ class FragmentA : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPermis
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_search -> {
-                agreeMent()
+                startActivityForResult(Intent(mActivity, FilterActivityDialog::class.java),3324)
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
     }
+
 
 
     private val apiServices by lazy { ApiUtils.apiService }
@@ -97,7 +99,7 @@ class FragmentA : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPermis
     lateinit var mLastLocation: Location
     var mCurrLocationMarker: Marker? = null
     private var mPermissionDenied = false
-    private val mFusedLocationClient by lazy {  LocationServices.getFusedLocationProviderClient(mContext) }
+    private val mFusedLocationClient by lazy {  LocationServices.getFusedLocationProviderClient(mContext!!) }
     private val mLocationRequest by lazy { LocationRequest() }
     private val miter:Int=1000
     private var mCurrentLatLng: LatLng?=null
@@ -118,11 +120,11 @@ class FragmentA : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPermis
                 }
                 //Place current location marker
                 try {
-                    nearBy()
+                    nearBy("")
                 } catch (e:Exception) { }
                 mCurrentLatLng = LatLng(location.latitude, location.longitude)
                 mGoogleMap.clear()
-                mGoogleMap.addMarker(MarkerOptions().position(mCurrentLatLng!!).title(mContext.getAddress(mCurrentLatLng!!)))
+                mGoogleMap.addMarker(MarkerOptions().position(mCurrentLatLng!!).title(mContext!!.getAddress(mCurrentLatLng!!)))
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(mCurrentLatLng!!))
                 if(miter==500) {
                     mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15.7f), null)
@@ -137,21 +139,8 @@ class FragmentA : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPermis
         }
     }
 
-
-    private fun agreeMent(){
-        val dFragment = FilterDialogFragment()
-        val args = Bundle()
-        args.putString("message","Term candition")
-        dFragment.arguments = args
-        dFragment.show(fm, "Dialog Fragment")
-    }
-
-
-
-
     override fun onPause() {
         super.onPause()
-        //stop location updates when Activity is no longer active
         if (mFusedLocationClient != null) {
             mFusedLocationClient!!.removeLocationUpdates(mLocationCallback)
         }
@@ -169,7 +158,7 @@ class FragmentA : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPermis
         mGoogleMap.uiSettings.isZoomControlsEnabled = false
         mGoogleMap.uiSettings.isMyLocationButtonEnabled = true
 
-        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ContextCompat.checkSelfPermission(mContext!!, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED) {
             mGoogleMap.isMyLocationEnabled = true;
         } else {
@@ -248,13 +237,22 @@ class FragmentA : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPermis
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_LOCATION -> when (resultCode) {
-                Activity.RESULT_OK ->
+                RESULT_OK ->
                     enableMyLocation()
-                Activity.RESULT_CANCELED -> {
+                RESULT_CANCELED -> {
                     Toast.makeText(mActivity, R.string.permission_rationale_location, Toast.LENGTH_LONG).show()
                     mActivity.finish()
                 }
                 else -> {
+                }
+            }
+            3324->when(resultCode) {
+                RESULT_OK -> {
+                    val returnString = data!!.getStringExtra("keyName")
+                    mActivity.toast(returnString)
+                    nearBy(returnString)
+                }
+                RESULT_CANCELED -> {
                 }
             }
         }
@@ -283,16 +281,15 @@ class FragmentA : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPermis
     }
 
 
-
     @SuppressLint("CheckResult")
-    private fun nearBy() {
-        apiServices.getNearby()
+    private fun nearBy(str:String) {
+        apiServices.getNearby(str)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { result ->
                     val data = result.data!!.nearbyVendor
-                    Toast.makeText(mContext, "${result.message}", Toast.LENGTH_SHORT).show()
+                   // Toast.makeText(mContext, "${result.message}", Toast.LENGTH_SHORT).show()
                     setMap(data)
                     Log.d("Tags", " $data")
 
@@ -335,8 +332,4 @@ class FragmentA : Fragment(), OnMapReadyCallback, ActivityCompat.OnRequestPermis
         val markerOptions = MarkerOptions().position(position)
         mGoogleMap.addMarker(markerOptions)
     }
-
-
-
-
 }

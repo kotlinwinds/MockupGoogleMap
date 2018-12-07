@@ -2,7 +2,9 @@ package co.winds.nearByPartners
 
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
@@ -12,6 +14,7 @@ import android.util.Log
 import android.view.*
 import android.widget.Toast
 import co.winds.R
+import co.winds.nearByPartners.adapter.FilterActivityDialog
 import co.winds.nearByPartners.adapter.MyAdapter
 import co.winds.restservices.ApiUtils
 import co.winds.utils.toast
@@ -30,7 +33,7 @@ class FragmentB : Fragment() {
         mContext=(activity!! as AppCompatActivity)
         mActivity=(activity!! as AppCompatActivity)
         setHasOptionsMenu(true)
-        nearBy()
+
     }
 
 
@@ -38,6 +41,7 @@ class FragmentB : Fragment() {
          val v= inflater.inflate(R.layout.fragment_listview, container, false)
          recy=v.recycler_view_list
          recy.layoutManager = LinearLayoutManager(activity)
+        nearBy("")
         return v!!
     }
 
@@ -50,7 +54,7 @@ class FragmentB : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_search -> {
-                mActivity.toast("hiii B...")
+                startActivityForResult(Intent(mActivity, FilterActivityDialog::class.java),3324)
                 return true
             }
         }
@@ -58,17 +62,30 @@ class FragmentB : Fragment() {
     }
 
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            3324->when(resultCode) {
+                Activity.RESULT_OK -> {
+                    val returnString = data!!.getStringExtra("keyName")
+                    mActivity.toast(returnString)
+                    nearBy(returnString)
+                }
+                Activity.RESULT_CANCELED -> {
+                }
+            }
+        }
+    }
+
+
     @SuppressLint("CheckResult")
-    private fun nearBy() {
-        apiServices.getNearby()
+    private fun nearBy(str:String) {
+        apiServices.getNearby(str)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { result ->
                     val data = result.data!!.nearbyVendor
                     recy.adapter= MyAdapter(data!! as List<*>)
-
-
                     Log.d("Tags", " $data")
 
                 },

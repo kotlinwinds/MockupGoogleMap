@@ -1,4 +1,5 @@
 package co.winds.restservices
+import co.winds.model.ResponseCategoryModel
 import co.winds.model.ResponseModel
 import io.reactivex.Observable
 import okhttp3.MultipartBody
@@ -24,8 +25,13 @@ interface APIService {
 
 
 
-    @GET("/vendor/nearby")
-    fun getNearby(): Observable<ResponseModel>
+    @GET("/vendor/nearby/{category}")
+    fun getNearby(@Path("category")category:String): Observable<ResponseModel>
+
+    @GET("/vendor/categories")
+    fun getCategoryList() : Observable<ResponseCategoryModel>
+
+
 
 
     @POST("/vendor/register")
